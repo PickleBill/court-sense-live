@@ -1,6 +1,7 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Activity, Menu, X, LogOut, User, Database } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, User } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
   { label: "Marketplace", to: "/marketplace" },
@@ -11,17 +12,25 @@ const navLinks = [
 export default function Navbar() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-14 border-b border-border bg-background/95 backdrop-blur-sm">
-      <div className="max-w-[1600px] mx-auto px-4 h-full flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-sm bg-primary flex items-center justify-center">
-            <Activity size={16} className="text-primary-foreground" />
-          </div>
-          <span className="font-mono-data text-sm font-bold text-primary tracking-tight">
-            CourtSense<span className="text-foreground">.ai</span>
-          </span>
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-background/90 backdrop-blur-sm border-b border-border"
+          : ""
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-16">
+        <Link to="/" className="font-display text-lg font-extrabold text-foreground tracking-tight">
+          Court<span className="text-primary">Sense</span>
         </Link>
 
         <div className="hidden md:flex items-center gap-1">
@@ -29,10 +38,10 @@ export default function Navbar() {
             <Link
               key={link.to}
               to={link.to}
-              className={`px-3 py-1.5 text-xs font-mono-data font-medium rounded-sm transition-colors ${
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 location.pathname === link.to
                   ? "text-primary bg-primary/10"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {link.label}
@@ -40,42 +49,54 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden md:flex items-center gap-4">
-          <div className="flex items-center gap-2 px-3 py-1 rounded-sm bg-primary/5 border border-primary/20">
-            <Database size={12} className="text-primary" />
-            <span className="font-mono-data text-xs text-primary">2,478 Clips · 6 Brands</span>
-          </div>
+        <div className="hidden md:flex items-center gap-3">
           <Link
             to="/login"
-            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors font-mono-data"
+            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <User size={14} />
-            <span>Login</span>
+            Sign In
           </Link>
         </div>
 
         <button
           className="md:hidden text-foreground"
           onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label="Toggle menu"
         >
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
 
-      {mobileOpen && (
-        <div className="md:hidden bg-background border-b border-border px-4 pb-4">
-          {navLinks.map((link) => (
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="md:hidden bg-background border-b border-border px-6 pb-6"
+          >
+            {navLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={() => setMobileOpen(false)}
+                className="block py-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
             <Link
-              key={link.to}
-              to={link.to}
+              to="/login"
               onClick={() => setMobileOpen(false)}
-              className="block py-2.5 font-mono-data text-sm text-muted-foreground hover:text-foreground"
+              className="flex items-center gap-2 py-3 text-sm text-muted-foreground hover:text-foreground"
             >
-              {link.label}
+              <User size={13} />
+              Sign In
             </Link>
-          ))}
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }
