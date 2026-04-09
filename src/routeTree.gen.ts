@@ -10,16 +10,31 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SampleDataRouteImport } from './routes/sample-data'
+import { Route as PlayersRouteImport } from './routes/players'
+import { Route as MultiAngleRouteImport } from './routes/multi-angle'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HighlightsRouteImport } from './routes/highlights'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ClipsRouteImport } from './routes/clips'
+import { Route as BuyerLensRouteImport } from './routes/buyer-lens'
+import { Route as BrandsRouteImport } from './routes/brands'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as IntelligenceBrandRouteImport } from './routes/intelligence.$brand'
 
 const SampleDataRoute = SampleDataRouteImport.update({
   id: '/sample-data',
   path: '/sample-data',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlayersRoute = PlayersRouteImport.update({
+  id: '/players',
+  path: '/players',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MultiAngleRoute = MultiAngleRouteImport.update({
+  id: '/multi-angle',
+  path: '/multi-angle',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MarketplaceRoute = MarketplaceRouteImport.update({
@@ -42,6 +57,21 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClipsRoute = ClipsRouteImport.update({
+  id: '/clips',
+  path: '/clips',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuyerLensRoute = BuyerLensRouteImport.update({
+  id: '/buyer-lens',
+  path: '/buyer-lens',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrandsRoute = BrandsRouteImport.update({
+  id: '/brands',
+  path: '/brands',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -55,29 +85,44 @@ const IntelligenceBrandRoute = IntelligenceBrandRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/brands': typeof BrandsRoute
+  '/buyer-lens': typeof BuyerLensRoute
+  '/clips': typeof ClipsRoute
   '/dashboard': typeof DashboardRoute
   '/highlights': typeof HighlightsRoute
   '/login': typeof LoginRoute
   '/marketplace': typeof MarketplaceRoute
+  '/multi-angle': typeof MultiAngleRoute
+  '/players': typeof PlayersRoute
   '/sample-data': typeof SampleDataRoute
   '/intelligence/$brand': typeof IntelligenceBrandRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/brands': typeof BrandsRoute
+  '/buyer-lens': typeof BuyerLensRoute
+  '/clips': typeof ClipsRoute
   '/dashboard': typeof DashboardRoute
   '/highlights': typeof HighlightsRoute
   '/login': typeof LoginRoute
   '/marketplace': typeof MarketplaceRoute
+  '/multi-angle': typeof MultiAngleRoute
+  '/players': typeof PlayersRoute
   '/sample-data': typeof SampleDataRoute
   '/intelligence/$brand': typeof IntelligenceBrandRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/brands': typeof BrandsRoute
+  '/buyer-lens': typeof BuyerLensRoute
+  '/clips': typeof ClipsRoute
   '/dashboard': typeof DashboardRoute
   '/highlights': typeof HighlightsRoute
   '/login': typeof LoginRoute
   '/marketplace': typeof MarketplaceRoute
+  '/multi-angle': typeof MultiAngleRoute
+  '/players': typeof PlayersRoute
   '/sample-data': typeof SampleDataRoute
   '/intelligence/$brand': typeof IntelligenceBrandRoute
 }
@@ -85,38 +130,58 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/brands'
+    | '/buyer-lens'
+    | '/clips'
     | '/dashboard'
     | '/highlights'
     | '/login'
     | '/marketplace'
+    | '/multi-angle'
+    | '/players'
     | '/sample-data'
     | '/intelligence/$brand'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/brands'
+    | '/buyer-lens'
+    | '/clips'
     | '/dashboard'
     | '/highlights'
     | '/login'
     | '/marketplace'
+    | '/multi-angle'
+    | '/players'
     | '/sample-data'
     | '/intelligence/$brand'
   id:
     | '__root__'
     | '/'
+    | '/brands'
+    | '/buyer-lens'
+    | '/clips'
     | '/dashboard'
     | '/highlights'
     | '/login'
     | '/marketplace'
+    | '/multi-angle'
+    | '/players'
     | '/sample-data'
     | '/intelligence/$brand'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BrandsRoute: typeof BrandsRoute
+  BuyerLensRoute: typeof BuyerLensRoute
+  ClipsRoute: typeof ClipsRoute
   DashboardRoute: typeof DashboardRoute
   HighlightsRoute: typeof HighlightsRoute
   LoginRoute: typeof LoginRoute
   MarketplaceRoute: typeof MarketplaceRoute
+  MultiAngleRoute: typeof MultiAngleRoute
+  PlayersRoute: typeof PlayersRoute
   SampleDataRoute: typeof SampleDataRoute
   IntelligenceBrandRoute: typeof IntelligenceBrandRoute
 }
@@ -128,6 +193,20 @@ declare module '@tanstack/react-router' {
       path: '/sample-data'
       fullPath: '/sample-data'
       preLoaderRoute: typeof SampleDataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/players': {
+      id: '/players'
+      path: '/players'
+      fullPath: '/players'
+      preLoaderRoute: typeof PlayersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/multi-angle': {
+      id: '/multi-angle'
+      path: '/multi-angle'
+      fullPath: '/multi-angle'
+      preLoaderRoute: typeof MultiAngleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/marketplace': {
@@ -158,6 +237,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/clips': {
+      id: '/clips'
+      path: '/clips'
+      fullPath: '/clips'
+      preLoaderRoute: typeof ClipsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buyer-lens': {
+      id: '/buyer-lens'
+      path: '/buyer-lens'
+      fullPath: '/buyer-lens'
+      preLoaderRoute: typeof BuyerLensRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/brands': {
+      id: '/brands'
+      path: '/brands'
+      fullPath: '/brands'
+      preLoaderRoute: typeof BrandsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -177,10 +277,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BrandsRoute: BrandsRoute,
+  BuyerLensRoute: BuyerLensRoute,
+  ClipsRoute: ClipsRoute,
   DashboardRoute: DashboardRoute,
   HighlightsRoute: HighlightsRoute,
   LoginRoute: LoginRoute,
   MarketplaceRoute: MarketplaceRoute,
+  MultiAngleRoute: MultiAngleRoute,
+  PlayersRoute: PlayersRoute,
   SampleDataRoute: SampleDataRoute,
   IntelligenceBrandRoute: IntelligenceBrandRoute,
 }
