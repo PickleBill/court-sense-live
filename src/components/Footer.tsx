@@ -16,9 +16,9 @@ export default function Footer() {
           <div className="flex gap-12">
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground uppercase tracking-widest font-medium mb-3">Product</p>
-              <Link to="/marketplace" className="block text-sm text-muted-foreground hover:text-foreground transition-colors">Marketplace</Link>
-              <Link to="/highlights" className="block text-sm text-muted-foreground hover:text-foreground transition-colors">Highlights</Link>
-              <Link to="/sample-data" className="block text-sm text-muted-foreground hover:text-foreground transition-colors">Sample Data</Link>
+              <Link to="/clips" className="block text-sm text-muted-foreground hover:text-foreground transition-colors">Clip Explorer</Link>
+              <Link to="/brands" className="block text-sm text-muted-foreground hover:text-foreground transition-colors">Brand Intelligence</Link>
+              <Link to="/buyer-lens" className="block text-sm text-muted-foreground hover:text-foreground transition-colors">Buyer Lens</Link>
             </div>
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground uppercase tracking-widest font-medium mb-3">Company</p>
@@ -28,14 +28,8 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="mt-10 pt-6 border-t border-border flex items-center justify-between">
-          <span className="text-xs text-muted-foreground">
-            © 2025 CourtSense AI
-          </span>
-          <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-            All systems operational
-          </span>
+        <div className="mt-8 pt-6 border-t border-border text-xs text-muted-foreground">
+          © {new Date().getFullYear()} CourtSense AI. All rights reserved.
         </div>
       </div>
     </footer>

@@ -1,45 +1,44 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useInView } from "framer-motion";
 
 const CountUp = ({
-  target,
+  end,
+  decimals = 0,
+  duration = 1.2,
   prefix = "",
   suffix = "",
-  active,
 }: {
-  target: number;
+  end: number;
+  decimals?: number;
+  duration?: number;
   prefix?: string;
   suffix?: string;
-  active: boolean;
 }) => {
   const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true });
 
   useEffect(() => {
-    if (!active) return;
-    if (target === 0) {
-      setCount(0);
-      return;
-    }
-    const duration = 1200;
+    if (!inView) return;
+    if (end === 0) { setCount(0); return; }
     const steps = 30;
-    const increment = target / steps;
+    const increment = end / steps;
     let current = 0;
     const interval = setInterval(() => {
       current += increment;
-      if (current >= target) {
-        setCount(target);
+      if (current >= end) {
+        setCount(end);
         clearInterval(interval);
       } else {
-        setCount(Math.floor(current));
+        setCount(decimals > 0 ? parseFloat(current.toFixed(decimals)) : Math.floor(current));
       }
-    }, duration / steps);
+    }, (duration * 1000) / steps);
     return () => clearInterval(interval);
-  }, [active, target]);
+  }, [inView, end, decimals, duration]);
 
   return (
-    <span>
-      {prefix}
-      {count}
-      {suffix}
+    <span ref={ref}>
+      {prefix}{decimals > 0 ? count.toFixed(decimals) : count.toLocaleString()}{suffix}
     </span>
   );
 };
