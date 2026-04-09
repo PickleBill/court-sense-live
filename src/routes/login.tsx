@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Activity, Mail, Lock, ArrowRight } from "lucide-react";
+import { Mail, Lock, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import FadeIn from "@/components/FadeIn";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -19,70 +20,72 @@ function LoginPage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-sm bg-primary flex items-center justify-center mx-auto mb-4">
-            <Activity size={24} className="text-primary-foreground" />
+        <FadeIn>
+          <div className="text-center mb-8">
+            <p className="font-display text-2xl font-extrabold text-foreground">
+              Court<span className="text-primary">Sense</span>
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">Enterprise Data Marketplace Access</p>
           </div>
-          <h1 className="font-display text-xl font-bold text-foreground">CourtSense AI</h1>
-          <p className="font-mono-data text-xs text-muted-foreground mt-1">Enterprise Data Marketplace Access</p>
-        </div>
+        </FadeIn>
 
         {submitted ? (
-          <div className="terminal-card p-6 text-center">
-            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-3">
-              <Activity size={20} className="text-primary" />
+          <FadeIn>
+            <div className="bg-card border border-border rounded-lg p-8 text-center">
+              <p className="text-foreground font-medium">Access Granted</p>
+              <p className="text-sm text-muted-foreground mt-1">Loading data marketplace...</p>
+              <Link
+                to="/marketplace"
+                className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 bg-primary text-primary-foreground text-sm font-semibold rounded-md"
+              >
+                Enter Marketplace <ArrowRight size={12} />
+              </Link>
             </div>
-            <p className="text-sm text-foreground font-medium">Access Granted</p>
-            <p className="font-mono-data text-xs text-muted-foreground mt-1">Loading data marketplace...</p>
-            <Link
-              to="/marketplace"
-              className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-primary text-primary-foreground font-mono-data text-xs font-bold rounded-sm"
-            >
-              Enter Marketplace <ArrowRight size={12} />
-            </Link>
-          </div>
+          </FadeIn>
         ) : (
-          <form onSubmit={handleSubmit} className="terminal-card p-6 space-y-4">
-            <div>
-              <label className="font-mono-data text-xs text-muted-foreground block mb-1.5">Email</label>
-              <div className="relative">
-                <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-background border border-border rounded-sm pl-9 pr-3 py-2 font-mono-data text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary"
-                  placeholder="brand@manufacturer.com"
-                  required
-                />
+          <FadeIn delay={0.05}>
+            <form onSubmit={handleSubmit} className="bg-card border border-border rounded-lg p-8 space-y-5">
+              <div>
+                <label className="text-sm text-muted-foreground block mb-1.5">Email</label>
+                <div className="relative">
+                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-background border border-border rounded-md pl-9 pr-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-colors"
+                    placeholder="brand@manufacturer.com"
+                    required
+                  />
+                </div>
               </div>
-            </div>
-            <div>
-              <label className="font-mono-data text-xs text-muted-foreground block mb-1.5">Password</label>
-              <div className="relative">
-                <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-background border border-border rounded-sm pl-9 pr-3 py-2 font-mono-data text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary"
-                  placeholder="••••••••"
-                  required
-                />
+              <div>
+                <label className="text-sm text-muted-foreground block mb-1.5">Password</label>
+                <div className="relative">
+                  <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-background border border-border rounded-md pl-9 pr-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-colors"
+                    placeholder="••••••••"
+                    required
+                  />
+                </div>
               </div>
-            </div>
-            <button
-              type="submit"
-              className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground font-mono-data text-sm font-bold py-2.5 rounded-sm hover:opacity-90 transition-opacity glow-green-subtle"
-            >
-              Sign In
-              <ArrowRight size={14} />
-            </button>
-          </form>
+              <button
+                type="submit"
+                className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground text-sm font-semibold py-2.5 rounded-md hover:opacity-90 transition-opacity"
+              >
+                Sign In
+                <ArrowRight size={14} />
+              </button>
+            </form>
+          </FadeIn>
         )}
 
-        <p className="text-center font-mono-data text-xs text-muted-foreground mt-6">
-          <Link to="/" className="text-primary hover:underline">← Back to CourtSense AI</Link>
+        <p className="text-center text-sm text-muted-foreground mt-6">
+          <Link to="/" className="text-primary hover:underline">← Back to CourtSense</Link>
         </p>
       </div>
     </div>

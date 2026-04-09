@@ -1,31 +1,61 @@
-// Hybrid data layer: real GitHub API data + mock supplements
+// Hybrid data layer: real GitHub API + mock supplements
 
-const BASE_URL = "https://raw.githubusercontent.com/PickleBill/pickle-daas-data/main/output/lovable-package";
+const BASE_URL =
+  "https://raw.githubusercontent.com/PickleBill/pickle-daas-data/main/output/lovable-package";
 
-// Types
+// ─── Types ───
+
 export interface RawClip {
   id: string;
   name: string;
   video_url: string;
+  thumbnail_url?: string;
   quality_score: number;
   viral_score: number;
-  watchability_score?: number;
-  cinematic_score?: number;
   story_arc: string;
+  ron_burgundy_quote?: string;
+  top_badge?: string;
   brands: string[];
-  daas_signals?: Record<string, unknown>;
-  commentary?: string;
+  caption?: string;
+  sport?: string;
+  sport_confidence?: string;
+  tmnt_commentary?: Record<string, string>;
+  daas_signals?: {
+    watchability_score?: number;
+    cinematic_score?: number;
+    coaching_breakdown?: string[];
+    hashtags?: string[];
+    badges?: string[];
+  };
+  commentary?: Record<string, string>;
 }
 
 export interface Brand {
   brand_name: string;
   category: string;
   appearances: number;
-  confidence: number;
+  clips: string[];
+  confidence: string;
   presence_percentage: number;
+  sponsorship_insight?: string;
+}
+
+export interface BrandRegistry {
+  total_clips_analyzed: number;
+  brands: Brand[];
+  sponsorship_insight: string;
+  generated_at: string;
 }
 
 export interface DashboardData {
+  player: {
+    username: string;
+    rank: number;
+    xp: number;
+    level: number;
+    rank_tier: string;
+    badges_count: number;
+  };
   kpis: {
     clips_analyzed: number;
     avg_quality_score: number;
@@ -33,23 +63,21 @@ export interface DashboardData {
     avg_viral_score: number;
   };
   analytics: {
-    top_brands: Brand[];
+    avg_quality_score: number;
+    avg_viral_score: number;
+    top_shot_type: string;
+    dominant_play_style: string;
+    top_brands: { brand: string; count: number }[];
     skill_radar: Record<string, number>;
     story_arc_breakdown: Record<string, number>;
+    total_clips_analyzed: number;
+    sport_breakdown: Record<string, number>;
   };
+  generated_at: string;
 }
 
-export interface PlayerDNA {
-  username: string;
-  rank: number;
-  xp: number;
-  level: number;
-  skill_radar: Record<string, number>;
-  coaching_insights: string[];
-  play_style: string;
-}
+// ─── Fetch with fallback ───
 
-// Fetch with fallback
 async function fetchJSON<T>(path: string, fallback: T): Promise<T> {
   try {
     const res = await fetch(`${BASE_URL}/${path}`);
@@ -61,96 +89,134 @@ async function fetchJSON<T>(path: string, fallback: T): Promise<T> {
 }
 
 export async function fetchClips(): Promise<RawClip[]> {
-  return fetchJSON<RawClip[]>("clips-metadata.json", mockClips);
+  const clips = await fetchJSON<RawClip[]>("clips-metadata.json", []);
+  // Supplement with mock clips for variety
+  return [...clips, ...mockSupplementClips];
 }
 
-export async function fetchBrands(): Promise<Brand[]> {
-  return fetchJSON<Brand[]>("brand-registry.json", mockBrands);
+export async function fetchBrandRegistry(): Promise<BrandRegistry> {
+  const registry = await fetchJSON<BrandRegistry>("brand-registry.json", {
+    total_clips_analyzed: 0,
+    brands: [],
+    sponsorship_insight: "",
+    generated_at: "",
+  });
+  // Supplement with mock brands
+  return {
+    ...registry,
+    brands: [...registry.brands, ...mockSupplementBrands],
+  };
 }
 
-export async function fetchDashboardData(): Promise<DashboardData> {
-  return fetchJSON<DashboardData>("dashboard-data.json", mockDashboardData);
+export async function fetchDashboard(): Promise<DashboardData> {
+  return fetchJSON<DashboardData>("dashboard-data.json", mockDashboardFallback);
 }
 
-export async function fetchPlayerDNA(): Promise<PlayerDNA> {
-  return fetchJSON<PlayerDNA>("player-dna.json", mockPlayerDNA);
-}
+// ─── Mock supplements (brands/clips not yet in real API) ───
 
-// ─── Mock Supplements ───
-
-export const mockClips: RawClip[] = [
+const mockSupplementClips: RawClip[] = [
   {
-    id: "clip-001",
+    id: "mock-001",
     name: "62 MPH Cross-Court Winner — Court 4",
-    video_url: "https://cdn.courtana.com/clips/clip-001.mp4",
-    quality_score: 92,
-    viral_score: 88,
-    watchability_score: 95,
-    cinematic_score: 78,
-    story_arc: "Comeback Rally",
-    brands: ["JOOLA", "SKECHERS"],
-    commentary: "Exceptional power shot with textbook follow-through. Brand paddle clearly visible.",
+    video_url: "https://cdn.courtana.com/clips/mock-001.mp4",
+    quality_score: 8,
+    viral_score: 6,
+    story_arc: "athletic_highlight",
+    brands: ["SELKIRK", "SKECHERS"],
+    caption: "Pure power from the baseline 💪",
+    sport: "pickleball",
   },
   {
-    id: "clip-002",
+    id: "mock-002",
     name: "45-Shot Rally — Court 2",
-    video_url: "https://cdn.courtana.com/clips/clip-002.mp4",
-    quality_score: 87,
-    viral_score: 94,
-    watchability_score: 91,
-    cinematic_score: 85,
-    story_arc: "Endurance Battle",
-    brands: ["SELKIRK", "LIFE TIME PICKLEBALL"],
-    commentary: "Extended rally showcasing defensive positioning and paddle durability under stress.",
+    video_url: "https://cdn.courtana.com/clips/mock-002.mp4",
+    quality_score: 7,
+    viral_score: 8,
+    story_arc: "grind_rally",
+    brands: ["ADIDAS", "LIFE TIME PICKLEBALL"],
+    caption: "When neither player will quit 🔥",
+    sport: "pickleball",
+  },
+];
+
+const mockSupplementBrands: Brand[] = [
+  {
+    brand_name: "SELKIRK",
+    category: "paddle",
+    appearances: 4,
+    clips: ["mock-001"],
+    confidence: "medium",
+    presence_percentage: 15,
   },
   {
-    id: "clip-003",
-    name: "Diving Save into Winner — Court 1",
-    video_url: "https://cdn.courtana.com/clips/clip-003.mp4",
-    quality_score: 95,
-    viral_score: 97,
-    watchability_score: 98,
-    cinematic_score: 92,
-    story_arc: "Hero Moment",
-    brands: ["JOOLA", "ADIDAS"],
-    commentary: "Full extension dive to retrieve a ball, followed by an immediate offensive winner.",
+    brand_name: "SKECHERS",
+    category: "footwear",
+    appearances: 3,
+    clips: ["mock-001"],
+    confidence: "medium",
+    presence_percentage: 12,
+  },
+  {
+    brand_name: "ADIDAS",
+    category: "apparel",
+    appearances: 2,
+    clips: ["mock-002"],
+    confidence: "medium",
+    presence_percentage: 8,
   },
 ];
 
-export const mockBrands: Brand[] = [
-  { brand_name: "JOOLA", category: "Paddle Manufacturer", appearances: 847, confidence: 0.94, presence_percentage: 34.2 },
-  { brand_name: "SELKIRK", category: "Paddle Manufacturer", appearances: 612, confidence: 0.91, presence_percentage: 24.7 },
-  { brand_name: "LIFE TIME PICKLEBALL", category: "Venue Partner", appearances: 1203, confidence: 0.98, presence_percentage: 48.6 },
-  { brand_name: "SKECHERS", category: "Footwear", appearances: 389, confidence: 0.87, presence_percentage: 15.7 },
-  { brand_name: "ADIDAS", category: "Apparel", appearances: 456, confidence: 0.89, presence_percentage: 18.4 },
-  { brand_name: "K-SWISS", category: "Footwear", appearances: 198, confidence: 0.82, presence_percentage: 8.0 },
-];
-
-export const mockDashboardData: DashboardData = {
+const mockDashboardFallback: DashboardData = {
+  player: {
+    username: "PickleBill",
+    rank: 1,
+    xp: 283950,
+    level: 17,
+    rank_tier: "Gold III",
+    badges_count: 82,
+  },
   kpis: {
-    clips_analyzed: 2478,
-    avg_quality_score: 84.3,
+    clips_analyzed: 8,
+    avg_quality_score: 7.3,
     top_brand: "JOOLA",
-    avg_viral_score: 71.2,
+    avg_viral_score: 5.5,
   },
   analytics: {
-    top_brands: [],
-    skill_radar: { power: 78, control: 85, speed: 72, endurance: 88, strategy: 91 },
-    story_arc_breakdown: { "Comeback Rally": 23, "Endurance Battle": 18, "Hero Moment": 12, "Dominant Win": 31, "Upset": 16 },
+    avg_quality_score: 7.3,
+    avg_viral_score: 5.5,
+    top_shot_type: "drive",
+    dominant_play_style: "banger",
+    top_brands: [
+      { brand: "JOOLA", count: 8 },
+      { brand: "LIFE TIME PICKLEBALL", count: 8 },
+      { brand: "CRBN", count: 2 },
+    ],
+    skill_radar: {
+      court_coverage: 6.0,
+      kitchen_mastery: 5.0,
+      power_game: 6.0,
+      touch_feel: 5.3,
+      athleticism: 6.3,
+      creativity: 4.0,
+      court_iq: 5.7,
+    },
+    story_arc_breakdown: {
+      grind_rally: 2,
+      athletic_highlight: 1,
+      teaching_moment: 3,
+      pure_fun: 2,
+      error_highlight: 1,
+    },
+    total_clips_analyzed: 8,
+    sport_breakdown: {
+      pickleball: 6,
+      hockey: 2,
+    },
   },
+  generated_at: "2026-03-28T00:00:00Z",
 };
 
-export const mockPlayerDNA: PlayerDNA = {
-  username: "demo_player",
-  rank: 42,
-  xp: 12400,
-  level: 8,
-  skill_radar: { power: 78, control: 85, speed: 72, endurance: 88, strategy: 91 },
-  coaching_insights: ["Improve net approach timing", "Leverage backhand dink consistency"],
-  play_style: "Defensive Counter-Puncher",
-};
-
-// ─── Equipment Audit Data (Dataset B from PDF) ───
+// ─── Equipment Audit Data (Dataset B from PDF — mock) ───
 
 export interface EquipmentAudit {
   brand: string;
@@ -168,12 +234,12 @@ export const equipmentAudits: EquipmentAudit[] = [
   { brand: "JOOLA", model: "Solaire CFS 14", gripSuccessRate: 91.8, stressEventOutcome: 84.6, avgShotSpeed: 51.2, controlRating: 86, durabilityIndex: 90, sampleSize: 287 },
   { brand: "SELKIRK", model: "Vanguard Power Air", gripSuccessRate: 89.4, stressEventOutcome: 82.3, avgShotSpeed: 52.7, controlRating: 83, durabilityIndex: 85, sampleSize: 256 },
   { brand: "SELKIRK", model: "SLK Halo", gripSuccessRate: 87.1, stressEventOutcome: 79.8, avgShotSpeed: 46.9, controlRating: 88, durabilityIndex: 82, sampleSize: 198 },
-  { brand: "ADIDAS", model: "Metalbone HRD", gripSuccessRate: 92.6, stressEventOutcome: 85.9, avgShotSpeed: 49.8, controlRating: 89, durabilityIndex: 91, sampleSize: 178 },
-  { brand: "SKECHERS", model: "Viper Court Pro", gripSuccessRate: 86.3, stressEventOutcome: 78.4, avgShotSpeed: 44.2, controlRating: 90, durabilityIndex: 87, sampleSize: 145 },
-  { brand: "K-SWISS", model: "Express Light 3", gripSuccessRate: 84.7, stressEventOutcome: 76.1, avgShotSpeed: 43.8, controlRating: 85, durabilityIndex: 83, sampleSize: 112 },
+  { brand: "CRBN", model: "CRBN 1X Power", gripSuccessRate: 92.6, stressEventOutcome: 85.9, avgShotSpeed: 49.8, controlRating: 89, durabilityIndex: 91, sampleSize: 178 },
+  { brand: "ADIDAS", model: "Metalbone HRD", gripSuccessRate: 90.3, stressEventOutcome: 83.4, avgShotSpeed: 50.1, controlRating: 87, durabilityIndex: 86, sampleSize: 145 },
+  { brand: "SKECHERS", model: "Viper Court Pro", gripSuccessRate: 86.3, stressEventOutcome: 78.4, avgShotSpeed: 44.2, controlRating: 90, durabilityIndex: 87, sampleSize: 112 },
 ];
 
-// ─── Hustle Index Data (Dataset A from PDF) ───
+// ─── Hustle Index Data (Dataset A from PDF — mock) ───
 
 export interface HustleIndex {
   playerId: string;
@@ -193,7 +259,7 @@ export const hustleIndexData: HustleIndex[] = [
   { playerId: "PLR-005", hustleScore: 97.4, distanceCovered: 3102, sprintEvents: 41, avgRecoveryTime: 1.1, diveSaves: 5, biometricLoad: 92.3 },
 ];
 
-// ─── Tactical Geometry Data (Dataset C from PDF) ───
+// ─── Tactical Geometry Data (Dataset C from PDF — mock) ───
 
 export interface TacticalGeometry {
   matchId: string;
@@ -258,7 +324,7 @@ export const dataProducts: DataProduct[] = [
     price: "Contact Sales",
     metrics: ["Real-Time WebSocket Feed", "ML Training Payloads", "Tactical Geometry Data", "Custom Query Builder"],
     cta: "Request API Docs",
-    ctaLink: "#",
+    ctaLink: "/sample-data",
     priority: "P3",
   },
 ];
