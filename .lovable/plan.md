@@ -1,130 +1,131 @@
 
 
-# CourtSense AI — Enterprise Data Marketplace
+# CourtSense AI — Architecture & Design Overhaul Plan
 
-## What We're Actually Building
+## Two Problems to Solve
 
-A platform where **brand buyers** (Joola, Skechers, Adidas) and **investors** log in to see the value of court-derived data. Not a coaching tool. Not a camera management system. A **data intelligence marketplace** that proves the thesis: passive court video = monetizable asset.
+**1. Data layer is disconnected from real data.** The current `src/lib/data.ts` defines fetch functions (`fetchClips`, `fetchBrands`, etc.) but no page actually calls them. Every page imports static `mockClips`, `mockBrands` arrays directly. Meanwhile, the real GitHub API has 8 clips with real video URLs, real brand detection (JOOLA, LIFE TIME PICKLEBALL, CRBN), real quality/viral scores, and real commentary — none of it is being used.
 
-## Architecture
+**2. Design is generic AI terminal aesthetic.** The current design is exactly what impeccable calls out as AI slop: centered everything, identical card grids, monospace-everywhere "Bloomberg terminal" skin, neon green on black, gradient accents. We need to apply impeccable's principles while keeping a design that's authentic to a data marketplace for sports brands.
+
+---
+
+## Data Architecture
+
+### Real Data Available (GitHub API)
 
 ```text
-┌─────────────────────────────────────────────────┐
-│  /  Landing — Sell the vision (investor-first)  │
-├─────────────────────────────────────────────────┤
-│  /login — Brand buyer / investor access         │
-├─────────────────────────────────────────────────┤
-│  /marketplace — The data product catalog        │
-│    ├── Brand Intelligence Reports               │
-│    ├── AR Highlight Packages                    │
-│    └── Raw Data API Access tiers                │
-├─────────────────────────────────────────────────┤
-│  /intelligence/:brand — Brand-specific portal   │
-│    ├── Equipment Performance Audit table        │
-│    ├── Grip Success %, Stress Event outcomes    │
-│    ├── Competitive benchmarks vs other brands   │
-│    └── "Request Full Report" CTA                │
-├─────────────────────────────────────────────────┤
-│  /highlights — AR Media Library                 │
-│    ├── Clip gallery with brand detection tags   │
-│    ├── Quality/Viral/Watchability scores        │
-│    ├── "License This Clip" workflow             │
-│    └── AR overlay preview                       │
-├─────────────────────────────────────────────────┤
-│  /sample-data — Proof layer (investor demo)     │
-│    ├── Dataset A: Hustle Index table            │
-│    ├── Dataset B: Equipment Audit table         │
-│    ├── Dataset C: Tactical Geometry table       │
-│    └── Live JSON API preview                    │
-└─────────────────────────────────────────────────┘
+Base: raw.githubusercontent.com/PickleBill/pickle-daas-data/main/output/lovable-package/
+
+clips-metadata.json    → 8 clips with:
+                          - Real courtana.com video URLs (CDN-hosted MP4s)
+                          - Quality scores (7-8), viral scores (4-7)
+                          - Story arcs: athletic_highlight, grind_rally, teaching_moment, etc.
+                          - Brand detection: JOOLA (8/8), LIFE TIME (8/8), CRBN (2/8)
+                          - Multi-voice commentary (ESPN, hype, ron_burgundy, TMNT, coach)
+                          - DaaS signals: coaching_breakdown, hashtags, badges
+
+brand-registry.json    → 3 detected brands with appearance counts, confidence, clip IDs
+                          + sponsorship_insight string
+
+dashboard-data.json    → KPIs, skill radar (7 axes), story arc breakdown,
+                          sport breakdown (pickleball: 6, hockey: 2)
+
+player-dna.json        → Player profile with skill radar, coaching insights
 ```
 
-## Route Breakdown
+### Proposed Hybrid Data Layer
 
-### `/` — Landing Page (Investor-First)
-Reframe from "Bloomberg Terminal" dashboard pitch to **data monetization thesis**. Lead with the problem/solution table from your PDF page 6. Show the three revenue streams. Stats strip shows real numbers from your GitHub API (clips analyzed, brands detected, data points extracted). CTA: "Explore the Data" and "Request Demo."
+Refactor `src/lib/data.ts` to match PickleStats Hub's pattern — a context provider using TanStack Query that fetches from the real API, with mock supplements for scale:
 
-### `/marketplace` — Data Product Catalog
-Three product cards representing your revenue verticals:
-- **Brand Intelligence Reports** — "See exactly how your equipment performs in live amateur play" — P1 priority
-- **AR Highlight Packages** — "Revenue-ready clips with your brand featured" — P2 priority
-- **Raw Data API** — "Integrate court intelligence into your pipeline" — future/teaser
+- **Real clips** (8) from API + 3-5 mock clips to show variety
+- **Real brands** (3: JOOLA, LIFE TIME, CRBN) from API + mock brands (SELKIRK, SKECHERS, ADIDAS) to show market breadth
+- **Real dashboard KPIs** from API
+- **Mock equipment audits** (these don't exist in the API yet — fabricated per PDF Dataset B schema)
+- **Mock hustle index / tactical geometry** (Dataset A and C from PDF — no API equivalent yet)
 
-Each card shows pricing tier (teaser), sample metrics, and a CTA to explore.
+Every page will consume data via route loaders calling these fetch functions, not importing static arrays.
 
-### `/intelligence/:brand` — Brand-Specific Portal
-This is the money page. When Joola's marketing VP logs in, they see:
-- **Equipment Performance Audit** (Dataset B from your PDF) — their paddle's grip success rate, stress event outcomes, comparison vs Selkirk
-- **Hustle Index correlation** — how players using their gear perform biomechanically
-- **Clip evidence** — linked AR clips where their brand was detected
-- **"Download Full Report"** and **"Schedule Briefing"** CTAs
+---
 
-For the investor demo, show this with real data from PickleStats Hub (JOOLA and LIFE TIME PICKLEBALL are already detected). Supplement with mock data for Adidas, Skechers, Selkirk to show scale.
+## Design Overhaul — Impeccable Principles Applied
 
-### `/highlights` — AR Media Library
-Pulls real clips from your GitHub CDN. Each clip card shows:
-- Video player (real courtana.com video URLs)
-- Brand detection badges (from your brand registry)
-- Quality, Viral, Watchability, Cinematic scores (from daas_signals)
-- Story arc classification
-- "License for Brand Use" / "Export with AR Overlay" actions
+### What Changes
 
-### `/sample-data` — The Proof Layer (Investor Page)
-Directly renders the three datasets from your PDF as interactive tables:
-- Dataset A: Hustle Index (biometric load)
-- Dataset B: Equipment Performance Audit
-- Dataset C: Tactical Geometry (game state + win probability)
-- Live JSON API preview showing the ML training payload structure
-- "This data is generated from existing Reolink cameras with zero new hardware"
+**Typography**: Replace Inter + Roboto Mono monoculture. Following impeccable's font selection procedure:
+- Brand voice: "dense, authoritative, institutional" (Bloomberg-style data marketplace)
+- Reject reflex picks: Inter, DM Sans, Space Grotesk, IBM Plex
+- Proposal: Use a distinctive grotesque for headings (e.g., Bricolage Grotesque or Satoshi) paired with a clean proportional body font. Reserve monospace ONLY for actual data values in tables, not for all body text.
 
-### `/login` — Clean, minimal. No coaching language.
+**Layout**: Stop centering everything. Use left-aligned asymmetric layouts. Break the identical card grid pattern on marketplace and highlights pages. Use varied spacing for hierarchy.
 
-## Data Strategy
+**Color**: Keep the dark theme (this IS a data platform viewed by brand buyers in office settings — dark is correct), but ditch pure #00FF41 matrix green. Use OKLCH for a more refined accent — perhaps a warm amber or cool slate-blue that feels institutional rather than "hacker movie." Tint neutrals toward the brand hue.
 
-**Real data** (from PickleStats Hub GitHub API):
-- `clips-metadata.json` — 3+ clips with video URLs, scores, brands, commentary
-- `brand-registry.json` — JOOLA, LIFE TIME PICKLEBALL with appearance counts
-- `dashboard-data.json` — KPIs, skill radar, story arc breakdown
-- `player-dna.json` — player profile with skill radar
+**Visual details**: Remove scan-line animations, glow effects, terminal-card borders. These are the "AI slop" fingerprints. Replace with more subtle, purposeful motion — staggered reveals on page load, smooth table row transitions.
 
-**Mock data** (to demonstrate scale for investors):
-- Expand brand registry: add Adidas, Skechers, Selkirk, K-Swiss with fabricated equipment audit data matching your PDF's Dataset B schema
-- Expand venue data: 3-5 venues with match counts
-- Add pricing tiers for marketplace cards
-- Equipment performance audit tables matching your PDF exactly
+**Specific bans**: No gradient text, no side-stripe borders, no glassmorphism, no identical card grids.
 
-## Design System
+### What Transfers from VibeCo Labs
 
-Carry forward VibeCo Labs principles adapted with the CourtSense color palette:
-- **Background**: #0A0A0A (near-black)
-- **Primary**: #00FF41 (matrix green) for data accents and CTAs
-- **Typography**: Source Code Pro / Roboto Mono for data, Inter for headings
-- **Surfaces**: Elevated cards with 1px borders, glow on hover
-- **Animations**: Scan-line on headings, count-up on KPIs, bar-fill on progress
+Import these specific component patterns (adapted, not copied):
+- **FadeIn component** — scroll-triggered `useInView` + framer-motion reveal. Clean, reusable.
+- **CountUp/StatsBar pattern** — animated number count-up on scroll into view. Perfect for the KPI strips.
+- **SpeedTimeline SVG chart pattern** — interactive slider-driven data visualization with interpolated curves. Adapt for equipment performance comparison.
+- **ProjectShowcase card pattern** — hover-aware cards with category badges, thumbnails, and progressive info reveal. Adapt for clip gallery.
+- **Navbar scroll behavior** — transparent-to-backdrop-blur on scroll, mobile AnimatePresence menu.
 
-## What Gets Cut
+These are copied as component files and adapted, NOT as design tokens or color schemes.
 
-- No live camera feeds or RTSP management (that's operations, not sales)
-- No `/connect-court` route (venue onboarding is a separate ops tool)
-- No coaching/player-facing features
-- No betting data (P3 is deprioritized)
-- No "Active Streams: 12" in nav — replace with data-focused indicators
+---
 
 ## Build Order
 
-1. Fix current build errors + update SEO/branding
-2. Data layer — create hybrid data provider (real GitHub API + mock supplements)
-3. Landing page — rewrite with investor thesis framing
-4. `/marketplace` — product catalog cards
-5. `/intelligence/:brand` — brand portal with equipment audit data
-6. `/highlights` — real clips from GitHub CDN with licensing CTAs
-7. `/sample-data` — PDF datasets as interactive proof tables
-8. Navigation + footer — marketplace-oriented, not dashboard-oriented
+### Step 1: Design System Reset
+- New font pairing (following impeccable procedure — will finalize in implementation)
+- Revised OKLCH color palette: keep dark background, choose a non-neon accent
+- Remove scan-line, glow-green, terminal-card utilities
+- Add FadeIn, CountUp components from VibeCo Labs
+- Add framer-motion dependency if not present
+
+### Step 2: Hybrid Data Layer
+- Refactor `src/lib/data.ts` to actually fetch from GitHub API using async functions
+- Match PickleStats Hub's `PickleDaasContext` type shapes (RawClip with commentary, daas_signals, etc.)
+- Supplement with mock data for scale (equipment audits, additional brands, tactical geometry)
+- Wire into route loaders so pages consume real data
+
+### Step 3: Landing Page Redesign
+- Left-aligned hero with asymmetric layout
+- CountUp stats strip pulling real KPIs from dashboard-data.json
+- Problem/solution section with varied card sizes (not identical grid)
+- Revenue verticals with progressive disclosure
+
+### Step 4: Intelligence Portal (`/intelligence/$brand`)
+- Real brand data from brand-registry.json for JOOLA/LIFE TIME/CRBN
+- Equipment audit table with current brand highlighted
+- Embedded real video clips where that brand was detected
+- Interactive SpeedTimeline-style comparison chart
+
+### Step 5: Highlights / Media Library
+- Real video players using courtana.com CDN URLs
+- Brand detection badges from real data
+- Commentary tabs (ESPN, hype, coach voices — all in the API)
+- DaaS signal display (watchability, cinematic scores, coaching breakdown)
+
+### Step 6: Sample Data / Proof Layer
+- Interactive tables for all three PDF datasets
+- Live JSON preview showing actual API response structure
+- "This data comes from existing Reolink cameras" messaging
+
+### Step 7: Marketplace + Nav + Footer
+- Product catalog with progressive disclosure (not identical card grid)
+- Updated navigation reflecting marketplace structure
+
+---
 
 ## Technical Notes
 
-- Recharts for any charts (already available patterns from PickleStats Hub)
-- Fetch real data from `https://raw.githubusercontent.com/PickleBill/pickle-daas-data/main/output/lovable-package/` endpoints
-- TanStack Router file-based routing — all routes created before any Link references
-- No Supabase/auth needed yet — mock auth state for demo purposes
+- **framer-motion**: Required for FadeIn, CountUp, AnimatePresence patterns from VibeCo. Need to verify it's installed or add it.
+- **Route loaders**: Pages will use TanStack Router loaders calling the fetch functions, with `staleTime: Infinity` since GitHub JSON is static.
+- **Real video playback**: The courtana.com CDN URLs are real MP4s. Use native `<video>` elements, not placeholder divs.
+- **No Supabase needed yet**: All data is static JSON from GitHub + mock supplements.
 
