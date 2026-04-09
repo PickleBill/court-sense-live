@@ -24,7 +24,7 @@ function LoginPage() {
             <Activity size={24} className="text-primary-foreground" />
           </div>
           <h1 className="font-display text-xl font-bold text-foreground">CourtSense AI</h1>
-          <p className="font-mono-data text-xs text-muted-foreground mt-1">Secure Terminal Access</p>
+          <p className="font-mono-data text-xs text-muted-foreground mt-1">Enterprise Data Marketplace Access</p>
         </div>
 
         {submitted ? (
@@ -33,12 +33,12 @@ function LoginPage() {
               <Activity size={20} className="text-primary" />
             </div>
             <p className="text-sm text-foreground font-medium">Access Granted</p>
-            <p className="font-mono-data text-xs text-muted-foreground mt-1">Redirecting to terminal...</p>
+            <p className="font-mono-data text-xs text-muted-foreground mt-1">Loading data marketplace...</p>
             <Link
-              to="/dashboard"
+              to="/marketplace"
               className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-primary text-primary-foreground font-mono-data text-xs font-bold rounded-sm"
             >
-              Enter Dashboard <ArrowRight size={12} />
+              Enter Marketplace <ArrowRight size={12} />
             </Link>
           </div>
         ) : (
@@ -52,7 +52,7 @@ function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-background border border-border rounded-sm pl-9 pr-3 py-2 font-mono-data text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary"
-                  placeholder="operator@courtsense.ai"
+                  placeholder="brand@manufacturer.com"
                   required
                 />
               </div>
@@ -75,7 +75,7 @@ function LoginPage() {
               type="submit"
               className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground font-mono-data text-sm font-bold py-2.5 rounded-sm hover:opacity-90 transition-opacity glow-green-subtle"
             >
-              Authenticate
+              Sign In
               <ArrowRight size={14} />
             </button>
           </form>
