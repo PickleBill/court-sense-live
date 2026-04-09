@@ -1,12 +1,5 @@
 import { Activity } from "lucide-react";
 
-const footerLinks = [
-  { label: "API Docs", href: "#" },
-  { label: "Data Privacy Policy", href: "#" },
-  { label: "Manufacturer Terms", href: "#" },
-  { label: "System Status", href: "#", status: true },
-];
-
 export default function Footer() {
   return (
     <footer className="border-t border-border bg-background">
@@ -15,22 +8,19 @@ export default function Footer() {
           <div className="flex items-center gap-2">
             <Activity size={14} className="text-primary" />
             <span className="font-mono-data text-xs text-muted-foreground">
-              © 2024 CourtSense AI. Kinetic Intelligence for Global Athletics.
+              © 2025 CourtSense AI. Enterprise Data Marketplace for Sports Intelligence.
             </span>
           </div>
           <div className="flex items-center gap-4">
-            {footerLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="flex items-center gap-1.5 font-mono-data text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {link.status && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                )}
-                {link.label}
-              </a>
+            {["API Docs", "Data Privacy", "Manufacturer Terms"].map((label) => (
+              <span key={label} className="font-mono-data text-xs text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
+                {label}
+              </span>
             ))}
+            <span className="flex items-center gap-1.5 font-mono-data text-xs text-muted-foreground">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              System Status
+            </span>
           </div>
         </div>
       </div>
