@@ -9,37 +9,36 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SampleDataRouteImport } from './routes/sample-data'
-import { Route as MarketplaceRouteImport } from './routes/marketplace'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as HighlightsRouteImport } from './routes/highlights'
-import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as PlayersRouteImport } from './routes/players'
+import { Route as MultiAngleRouteImport } from './routes/multi-angle'
+import { Route as ClipsRouteImport } from './routes/clips'
+import { Route as BuyerLensRouteImport } from './routes/buyer-lens'
+import { Route as BrandsRouteImport } from './routes/brands'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as IntelligenceBrandRouteImport } from './routes/intelligence.$brand'
 
-const SampleDataRoute = SampleDataRouteImport.update({
-  id: '/sample-data',
-  path: '/sample-data',
+const PlayersRoute = PlayersRouteImport.update({
+  id: '/players',
+  path: '/players',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MarketplaceRoute = MarketplaceRouteImport.update({
-  id: '/marketplace',
-  path: '/marketplace',
+const MultiAngleRoute = MultiAngleRouteImport.update({
+  id: '/multi-angle',
+  path: '/multi-angle',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const ClipsRoute = ClipsRouteImport.update({
+  id: '/clips',
+  path: '/clips',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HighlightsRoute = HighlightsRouteImport.update({
-  id: '/highlights',
-  path: '/highlights',
+const BuyerLensRoute = BuyerLensRouteImport.update({
+  id: '/buyer-lens',
+  path: '/buyer-lens',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const BrandsRoute = BrandsRouteImport.update({
+  id: '/brands',
+  path: '/brands',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -47,115 +46,97 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IntelligenceBrandRoute = IntelligenceBrandRouteImport.update({
-  id: '/intelligence/$brand',
-  path: '/intelligence/$brand',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/highlights': typeof HighlightsRoute
-  '/login': typeof LoginRoute
-  '/marketplace': typeof MarketplaceRoute
-  '/sample-data': typeof SampleDataRoute
-  '/intelligence/$brand': typeof IntelligenceBrandRoute
+  '/brands': typeof BrandsRoute
+  '/buyer-lens': typeof BuyerLensRoute
+  '/clips': typeof ClipsRoute
+  '/multi-angle': typeof MultiAngleRoute
+  '/players': typeof PlayersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/highlights': typeof HighlightsRoute
-  '/login': typeof LoginRoute
-  '/marketplace': typeof MarketplaceRoute
-  '/sample-data': typeof SampleDataRoute
-  '/intelligence/$brand': typeof IntelligenceBrandRoute
+  '/brands': typeof BrandsRoute
+  '/buyer-lens': typeof BuyerLensRoute
+  '/clips': typeof ClipsRoute
+  '/multi-angle': typeof MultiAngleRoute
+  '/players': typeof PlayersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/highlights': typeof HighlightsRoute
-  '/login': typeof LoginRoute
-  '/marketplace': typeof MarketplaceRoute
-  '/sample-data': typeof SampleDataRoute
-  '/intelligence/$brand': typeof IntelligenceBrandRoute
+  '/brands': typeof BrandsRoute
+  '/buyer-lens': typeof BuyerLensRoute
+  '/clips': typeof ClipsRoute
+  '/multi-angle': typeof MultiAngleRoute
+  '/players': typeof PlayersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/dashboard'
-    | '/highlights'
-    | '/login'
-    | '/marketplace'
-    | '/sample-data'
-    | '/intelligence/$brand'
+    | '/brands'
+    | '/buyer-lens'
+    | '/clips'
+    | '/multi-angle'
+    | '/players'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/dashboard'
-    | '/highlights'
-    | '/login'
-    | '/marketplace'
-    | '/sample-data'
-    | '/intelligence/$brand'
+  to: '/' | '/brands' | '/buyer-lens' | '/clips' | '/multi-angle' | '/players'
   id:
     | '__root__'
     | '/'
-    | '/dashboard'
-    | '/highlights'
-    | '/login'
-    | '/marketplace'
-    | '/sample-data'
-    | '/intelligence/$brand'
+    | '/brands'
+    | '/buyer-lens'
+    | '/clips'
+    | '/multi-angle'
+    | '/players'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRoute: typeof DashboardRoute
-  HighlightsRoute: typeof HighlightsRoute
-  LoginRoute: typeof LoginRoute
-  MarketplaceRoute: typeof MarketplaceRoute
-  SampleDataRoute: typeof SampleDataRoute
-  IntelligenceBrandRoute: typeof IntelligenceBrandRoute
+  BrandsRoute: typeof BrandsRoute
+  BuyerLensRoute: typeof BuyerLensRoute
+  ClipsRoute: typeof ClipsRoute
+  MultiAngleRoute: typeof MultiAngleRoute
+  PlayersRoute: typeof PlayersRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sample-data': {
-      id: '/sample-data'
-      path: '/sample-data'
-      fullPath: '/sample-data'
-      preLoaderRoute: typeof SampleDataRouteImport
+    '/players': {
+      id: '/players'
+      path: '/players'
+      fullPath: '/players'
+      preLoaderRoute: typeof PlayersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/marketplace': {
-      id: '/marketplace'
-      path: '/marketplace'
-      fullPath: '/marketplace'
-      preLoaderRoute: typeof MarketplaceRouteImport
+    '/multi-angle': {
+      id: '/multi-angle'
+      path: '/multi-angle'
+      fullPath: '/multi-angle'
+      preLoaderRoute: typeof MultiAngleRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
+    '/clips': {
+      id: '/clips'
+      path: '/clips'
+      fullPath: '/clips'
+      preLoaderRoute: typeof ClipsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/highlights': {
-      id: '/highlights'
-      path: '/highlights'
-      fullPath: '/highlights'
-      preLoaderRoute: typeof HighlightsRouteImport
+    '/buyer-lens': {
+      id: '/buyer-lens'
+      path: '/buyer-lens'
+      fullPath: '/buyer-lens'
+      preLoaderRoute: typeof BuyerLensRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
+    '/brands': {
+      id: '/brands'
+      path: '/brands'
+      fullPath: '/brands'
+      preLoaderRoute: typeof BrandsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -165,24 +146,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/intelligence/$brand': {
-      id: '/intelligence/$brand'
-      path: '/intelligence/$brand'
-      fullPath: '/intelligence/$brand'
-      preLoaderRoute: typeof IntelligenceBrandRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRoute: DashboardRoute,
-  HighlightsRoute: HighlightsRoute,
-  LoginRoute: LoginRoute,
-  MarketplaceRoute: MarketplaceRoute,
-  SampleDataRoute: SampleDataRoute,
-  IntelligenceBrandRoute: IntelligenceBrandRoute,
+  BrandsRoute: BrandsRoute,
+  BuyerLensRoute: BuyerLensRoute,
+  ClipsRoute: ClipsRoute,
+  MultiAngleRoute: MultiAngleRoute,
+  PlayersRoute: PlayersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
